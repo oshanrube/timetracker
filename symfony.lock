@@ -276,7 +276,22 @@
             "./config/routes/web_profiler.yaml"
         ]
     },
+    "symfonycasts/tailwind-bundle": {
+        "version": "v0.6.0"
+    },
     "twig/extra-bundle": {
         "version": "v3.13.0"
+    },
+    "zenstruck/foundry": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "37c2f894cc098ab4c08874b80cccc8e2f8de7976"
+        },
+        "files": [
+            "./config/packages/zenstruck_foundry.yaml"
+        ]
     }
 }
