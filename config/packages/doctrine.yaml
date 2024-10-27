@@ -32,6 +32,10 @@ doctrine:
 #                auto_mapping: true
 #                controller_resolver:
 #                    auto_mapping: false
+                filters:
+                    softdeleteable:
+                        class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                        enabled: true
                 mappings:
                     Auth:
                         is_bundle: false
@@ -40,6 +44,10 @@ doctrine:
                         alias: Auth
             company:
                 connection: company
+                filters:
+                    softdeleteable:
+                        class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                        enabled: true
 #                auto_generate_proxy_classes: true
 #                enable_lazy_ghost_objects: true
 #                report_fields_where_declared: true
