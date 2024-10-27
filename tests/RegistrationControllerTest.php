@@ -7,9 +7,11 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Mailer\Test\InteractsWithMailer;
 
 class RegistrationControllerTest extends WebTestCase
 {
+    use InteractsWithMailer;
     private KernelBrowser $client;
     private LoginRepository $userRepository;
 
@@ -52,7 +54,9 @@ class RegistrationControllerTest extends WebTestCase
         // Ensure the verification email was sent
         // Use either assertQueuedEmailCount() || assertEmailCount() depending on your mailer setup
         // self::assertQueuedEmailCount(1);
-//        self::assertEmailCount(1);
+        // self::assertEmailCount(1);
+        $this->mailer()->assertSentEmailCount(1);
+
 
         self::assertCount(1, $messages = $this->getMailerMessages());
         self::assertEmailAddressContains($messages[0], 'from', 'no-reply@timetracker.com');
