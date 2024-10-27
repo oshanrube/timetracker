@@ -1,6 +1,10 @@
 doctrine:
     dbal:
         connections:
+            default:
+                url: '%env(resolve:AUTH_DATABASE_URL)%'
+                profiling_collect_backtrace: '%kernel.debug%'
+                use_savepoints: true
             auth:
                 url: '%env(resolve:AUTH_DATABASE_URL)%'
                 profiling_collect_backtrace: '%kernel.debug%'
@@ -52,13 +56,6 @@ doctrine:
                         dir: '%kernel.project_dir%/src/Entity/Company'
                         prefix: 'App\Entity\Company'
                         alias: Company
-
-
-when@test:
-    doctrine:
-        dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:
     doctrine:
