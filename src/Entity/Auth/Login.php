@@ -3,6 +3,8 @@
 namespace App\Entity\Auth;
 
 use App\Repository\Auth\LoginRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -39,6 +41,17 @@ class Login implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, LoginHasCompany>
+     */
+    #[ORM\OneToMany(targetEntity: LoginHasCompany::class, mappedBy: 'Login', orphanRemoval: true)]
+    private Collection $loginHasCompanies;
+
+    public function __construct()
+    {
+        $this->loginHasCompanies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,6 +136,36 @@ class Login implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LoginHasCompany>
+     */
+    public function getLoginHasCompanies(): Collection
+    {
+        return $this->loginHasCompanies;
+    }
+
+    public function addLoginHasCompany(LoginHasCompany $loginHasCompany): static
+    {
+        if (!$this->loginHasCompanies->contains($loginHasCompany)) {
+            $this->loginHasCompanies->add($loginHasCompany);
+            $loginHasCompany->setLogin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoginHasCompany(LoginHasCompany $loginHasCompany): static
+    {
+        if ($this->loginHasCompanies->removeElement($loginHasCompany)) {
+            // set the owning side to null (unless already changed)
+            if ($loginHasCompany->getLogin() === $this) {
+                $loginHasCompany->setLogin(null);
+            }
+        }
 
         return $this;
     }

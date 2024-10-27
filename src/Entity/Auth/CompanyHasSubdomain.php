@@ -3,6 +3,8 @@
 namespace App\Entity\Auth;
 
 use App\Repository\Auth\CompanyHasSubdomainRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -20,8 +22,16 @@ class CompanyHasSubdomain
     #[ORM\Column(length: 255, unique: true)]
     private ?string $subdomain = null;
 
-    #[ORM\Column]
-    private ?int $companyId = null;
+    /**
+     * @var Collection<int, LoginHasCompany>
+     */
+    #[ORM\OneToMany(targetEntity: LoginHasCompany::class, mappedBy: 'Company')]
+    private Collection $loginHasCompanies;
+
+    public function __construct()
+    {
+        $this->loginHasCompanies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -40,15 +50,38 @@ class CompanyHasSubdomain
         return $this;
     }
 
-    public function getCompanyId(): ?int
+    /**
+     * @return Collection<int, LoginHasCompany>
+     */
+    public function getLoginHasCompanies(): Collection
     {
-        return $this->companyId;
+        return $this->loginHasCompanies;
     }
 
-    public function setCompanyId(int $companyId): static
+    public function addLoginHasCompany(LoginHasCompany $loginHasCompany): static
     {
-        $this->companyId = $companyId;
+        if (!$this->loginHasCompanies->contains($loginHasCompany)) {
+            $this->loginHasCompanies->add($loginHasCompany);
+            $loginHasCompany->setCompany($this);
+        }
 
         return $this;
+    }
+
+    public function removeLoginHasCompany(LoginHasCompany $loginHasCompany): static
+    {
+        if ($this->loginHasCompanies->removeElement($loginHasCompany)) {
+            // set the owning side to null (unless already changed)
+            if ($loginHasCompany->getCompany() === $this) {
+                $loginHasCompany->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->subdomain;
     }
 }
