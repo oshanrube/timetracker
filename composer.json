@@ -1,4 +1,6 @@
 {
+    "name": "oshanrube/time-tracker",
+    "description": "scalable time tracker software",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
