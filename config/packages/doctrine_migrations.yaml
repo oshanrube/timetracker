@@ -4,4 +4,6 @@ doctrine_migrations:
         # namespace is arbitrary but should be different from App\Migrations
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
+        'DoctrineMigrations\Auth': '%kernel.project_dir%/migrations/auth'
+        'DoctrineMigrations\Company': '%kernel.project_dir%/migrations/company'
     enable_profiler: false
