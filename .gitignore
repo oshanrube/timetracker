@@ -24,4 +24,4 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 /.idea/
-/mysql/mysql.sock
+/mysql/
