@@ -3,7 +3,7 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     container_name: mysql_database
-    image: mysql:8.0
+    image: mariadb:latest
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: VeGV3DWksG
