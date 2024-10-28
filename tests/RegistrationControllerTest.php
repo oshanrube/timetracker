@@ -7,10 +7,13 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 use Zenstruck\Mailer\Test\InteractsWithMailer;
 
 class RegistrationControllerTest extends WebTestCase
 {
+    use ResetDatabase, Factories;
     use InteractsWithMailer;
     private KernelBrowser $client;
     private LoginRepository $userRepository;
