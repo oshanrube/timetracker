@@ -28,6 +28,9 @@ class CompanyHasSubdomain
     #[ORM\OneToMany(targetEntity: LoginHasCompany::class, mappedBy: 'Company')]
     private Collection $loginHasCompanies;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
+
     public function __construct()
     {
         $this->loginHasCompanies = new ArrayCollection();
@@ -82,6 +85,18 @@ class CompanyHasSubdomain
 
     public function __toString()
     {
-        return $this->subdomain;
+        return $this->name;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

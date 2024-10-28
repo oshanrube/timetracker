@@ -1,6 +1,6 @@
 import './bootstrap.js';
-import './js/alpine.min.js';
-import './js/init-alpine.js';
+//import './js/alpine.min.js';
+//import './js/init-alpine.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -8,4 +8,19 @@ import './js/init-alpine.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
-import './styles/tailwind.output.css';
+import './styles/global.scss';
+
+// import './styles/tailwind.output.css';
+
+const $ = require('jquery');
+// this "modifies" the jquery module: adding behavior to it
+// the bootstrap module doesn't export/return anything
+require('bootstrap');
+
+// or you can include specific pieces
+// require('bootstrap/js/dist/tooltip');
+// require('bootstrap/js/dist/popover');
+
+$(document).ready(function() {
+    $('[data-toggle="popover"]').popover();
+});

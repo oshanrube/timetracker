@@ -34,7 +34,6 @@ class CompanySelectionController extends AbstractController
             if ($company_creation->checkSubdomainAvailability($company->getSubdomain())) {
                 $error = "";
             } else {
-                //
                 $company_creation->createCompany($company, $this->getUser());
             }
         }
@@ -46,5 +45,15 @@ class CompanySelectionController extends AbstractController
             'error'               => "",
             'LoginHasCompanies'           => $LoginHasCompanies,
         ]);
+    }
+    #[Route('/company/select/{companyId}', name: 'app_company_select')]
+    public function select(
+        Request                   $request,
+        int $companyId,
+    ): Response {
+        // pick the company
+        $session = $request->getSession();
+        $session->set('company-id', $companyId);
+        return $this->redirectToRoute('app_dashboard');
     }
 }
