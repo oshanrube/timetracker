@@ -6,6 +6,7 @@ use App\Entity\Auth\Login;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -13,12 +14,14 @@ class LoginControllerTest extends WebTestCase
 {
     use ResetDatabase, Factories;
 
-    private KernelBrowser $client;
+    private KernelBrowser $kernelBrowser;
+    private TranslatorInterface $translator;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $container = static::getContainer();
+        $this->translator = $container->get(TranslatorInterface::class);
         $em = $container->get('doctrine.orm.entity_manager');
         $userRepository = $em->getRepository(Login::class);
 
@@ -46,7 +49,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm($this->translator->trans('signIn'), [
             '_username' => 'doesNotExist@example.com',
             '_password' => 'password',
         ]);
@@ -61,7 +64,7 @@ class LoginControllerTest extends WebTestCase
         $this->client->request('GET', '/login');
         self::assertResponseIsSuccessful();
 
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm($this->translator->trans('signIn'), [
             '_username' => 'email@example.com',
             '_password' => 'bad-password',
         ]);
@@ -73,7 +76,7 @@ class LoginControllerTest extends WebTestCase
         self::assertSelectorTextContains('.alert-primary', 'Invalid credentials.');
 
         // Success - Login with valid credentials is allowed.
-        $this->client->submitForm('Log in', [
+        $this->client->submitForm($this->translator->trans('signIn'), [
             '_username' => 'email@example.com',
             '_password' => 'password',
         ]);

@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -18,10 +19,12 @@ class CompanySelectionControllerTest extends WebTestCase
     use ResetDatabase, Factories;
 
     private KernelBrowser $client;
+    private TranslatorInterface $translator;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->translator = static::getContainer()->get(TranslatorInterface::class);
     }
 
     protected function createAuthorizedClient()
@@ -51,20 +54,24 @@ class CompanySelectionControllerTest extends WebTestCase
         $this->client->getCookieJar()->set($cookie);
     }
 
-    public function testLogin(): void
+    public function testCreatingNewCompany(): void
     {
-        // Create company
+        // Sign in
         $this->createAuthorizedClient();
+        // go to page
         $this->client->request('GET', '/company/selection');
         self::assertResponseIsSuccessful();
+        self::assertPageTitleContains($this->translator->trans('Select Company'));
 
-        $this->client->submitForm('Create new company', [
+        // submit the form
+        $this->client->submitForm($this->translator->trans('Create new company'), [
             'create_company[name]'      => 'Test company',
             'create_company[subdomain]' => 'test-company',
         ]);
 
+        self::assertPageTitleContains($this->translator->trans('Select Company'));
         // ensure the company is created
-        self::assertSelectorTextContains('body > div.flex.items-center.min-h-screen.p-6.bg-gray-50.dark\:bg-gray-900 > div > div > div.flex.items-center.justify-center.p-6.sm\:p-12.md\:w-1\/2 > div > ul > li:nth-child(1) > div > div > a', 'Test company');
+        self::assertSelectorTextContains('body > main > div > div > div > div > div > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
 
         $this->client->clickLink("Test company");
         self::assertResponseRedirects('/dashboard');

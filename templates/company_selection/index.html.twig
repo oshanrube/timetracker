@@ -11,13 +11,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
+                        <div class="list-group">
                             {% for LoginHasCompany in LoginHasCompanies %}
-                                <li class="list-group-item" onclick="window.location.href='{{ path('app_company_select', {companyId: LoginHasCompany.company.id}) }}'">
+                                <a class="list-group-item" href="{{ path('app_company_select', {companyId: LoginHasCompany.company.id}) }}">
                                     {{ LoginHasCompany.Company }}
-                                </li>
+                                </a>
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                     <div class="card-body">
                         {% for flash_error in app.flashes('verify_email_error') %}
@@ -34,26 +34,27 @@
                                 </button>
                             </div>
                         {% endif %}
-                        <form method="post" action="{{ path('app_login') }}">
-                            <div class="input-group input-group-outline my-3">
-                                <label class="form-label">{{ 'companyName'|trans }}</label>
-                                {{ form_widget(companyCreationForm.name) }}
-                                {{ form_errors(companyCreationForm.name) }}
-                            </div>
-                            <div class="input-group input-group-outline mb-3">
-                                <label class="form-label">{{ 'subdomain'|trans }}</label>
-                                {{ form_widget(companyCreationForm.subdomain) }}
-                                {{ form_errors(companyCreationForm.subdomain) }}
-                            </div>
-                            <div class="input-group input-group-outline mb-3">
-                                <label class="form-label">{{ 'description'|trans }}</label>
-                                {{ form_widget(companyCreationForm.description) }}
-                                {{ form_errors(companyCreationForm.description) }}
-                            </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">{{ 'Create new company'|trans }}</button>
-                            </div>
-                            {{ form_end(companyCreationForm) }}
+                        {{ form_start(companyCreationForm) }}
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">{{ 'companyName'|trans }}</label>
+                            {{ form_widget(companyCreationForm.name) }}
+                            {{ form_errors(companyCreationForm.name) }}
+                        </div>
+                        <div class="input-group input-group-outline mb-3">
+                            <label class="form-label">{{ 'subdomain'|trans }}</label>
+                            {{ form_widget(companyCreationForm.subdomain) }}
+                            {{ form_errors(companyCreationForm.subdomain) }}
+                        </div>
+                        <div class="input-group input-group-outline mb-3">
+                            <label class="form-label">{{ 'description'|trans }}</label>
+                            {{ form_widget(companyCreationForm.description) }}
+                            {{ form_errors(companyCreationForm.description) }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit"
+                                    class="btn bg-gradient-primary w-100 my-4 mb-2">{{ 'Create new company'|trans }}</button>
+                        </div>
+                        {{ form_end(companyCreationForm) }}
                     </div>
                 </div>
             </div>
