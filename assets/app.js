@@ -8,7 +8,12 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
-import './styles/global.scss';
+<!-- Nucleo Icons -->
+import './css/nucleo-icons.css';
+import './css/nucleo-svg.css';
+<!-- CSS Files -->
+import './css/material-dashboard.css';
+//import './styles/global.scss';
 
 // import './styles/tailwind.output.css';
 
@@ -21,6 +26,6 @@ require('bootstrap');
 // require('bootstrap/js/dist/tooltip');
 // require('bootstrap/js/dist/popover');
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('[data-toggle="popover"]').popover();
 });

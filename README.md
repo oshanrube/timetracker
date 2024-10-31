@@ -12,3 +12,6 @@ symfony console doctrine:schema:update --force --em=auth
 symfony console doctrine:schema:update --force --em=company
 symfony console doctrine:schema:update --force --em=auth --env=test
 symfony console doctrine:schema:update --force --em=company --env=test
+
+
+symfony console translation:extract --force en
