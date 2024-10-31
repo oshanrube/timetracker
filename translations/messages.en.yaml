@@ -1,2 +1,7 @@
 signIn: 'Log In'
 signUp: 'Sign Up'
+'Select Company': 'Select Company'
+'Create new company': 'Create new company'
+companyName: Company Name
+subdomain: Sub Domain
+description: Description
