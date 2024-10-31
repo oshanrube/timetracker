@@ -1,101 +1,184 @@
-{% extends 'base.html.twig' %}
+<!--
+=========================================================
+* Material Dashboard 2 - v3.1.0
+=========================================================
 
-{% block title %}Log in!{% endblock %}
+* Product Page: https://www.creative-tim.com/product/material-dashboard
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
 
-{% block body %}
-    <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-        <div
-                class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800"
-        >
-            <div class="flex flex-col overflow-y-auto md:flex-row">
-                <div class="h-32 md:h-auto md:w-1/2">
-                    <img
-                            aria-hidden="true"
-                            class="object-cover w-full h-full dark:hidden"
-                            src="{{ asset('img/login-office.jpeg') }}"
-                            alt="Office"
-                    />
-                    <img
-                            aria-hidden="true"
-                            class="hidden object-cover w-full h-full dark:block"
-                            src="{{ asset('img/login-office-dark.jpeg') }}"
-                            alt="Office"
-                    />
-                </div>
-                <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-                    <div class="w-full">
-                        <form method="post" action="{{ path('app_login') }}">
-                            <h1
-                                    class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200"
-                            >
-                                Login
-                            </h1>
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('img/apple-icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+    <title>
+        Material Dashboard 2 by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"/>
+    <!-- Nucleo Icons -->
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS Files -->
+    <link id="pagestyle" href="{{ asset('css/material-dashboard.css') }}" rel="stylesheet"/>
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+</head>
+
+<body class="bg-gray-200">
+<main class="main-content  mt-0">
+    <div class="page-header align-items-start min-vh-100"
+         style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');">
+        <span class="mask bg-gradient-dark opacity-6"></span>
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-4 col-md-8 col-12 mx-auto">
+                    <div class="card z-index-0 fadeIn3 fadeInBottom">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                                <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Sign in</h4>
+                                {#                                <div class="row mt-3"> #}
+                                {#                                    <div class="col-2 text-center ms-auto"> #}
+                                {#                                        <a class="btn btn-link px-3" href="javascript:;"> #}
+                                {#                                            <i class="fa fa-facebook text-white text-lg"></i> #}
+                                {#                                        </a> #}
+                                {#                                    </div> #}
+                                {#                                    <div class="col-2 text-center px-1"> #}
+                                {#                                        <a class="btn btn-link px-3" href="javascript:;"> #}
+                                {#                                            <i class="fa fa-github text-white text-lg"></i> #}
+                                {#                                        </a> #}
+                                {#                                    </div> #}
+                                {#                                    <div class="col-2 text-center me-auto"> #}
+                                {#                                        <a class="btn btn-link px-3" href="javascript:;"> #}
+                                {#                                            <i class="fa fa-google text-white text-lg"></i> #}
+                                {#                                        </a> #}
+                                {#                                    </div> #}
+                                {#                                </div> #}
+                                {% for flash_error in app.flashes('verify_email_error') %}
+                                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-body">
                             {% if error %}
-                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                                     role="alert">
-                                    <strong class="font-bold">Error!</strong>
-                                    <span class="alert-danger block sm:inline">{{ error.messageKey|trans(error.messageData, 'security') }}</span>
-                                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-    <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path
-                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-  </span>
+                                <div class="alert alert-primary alert-dismissible text-white" role="alert">
+                                    <span class="text-sm">{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+                                    <button type="button" class="btn-close text-lg py-3 opacity-10"
+                                            data-bs-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
                                 </div>
                             {% endif %}
-                            {% if app.user %}
-                                <div class="mb-3">
-                                    You are logged in as {{ app.user.userIdentifier }}, <a
-                                            href="{{ path('app_logout') }}">Logout</a>
+                            <form method="post" action="{{ path('app_login') }}">
+                                <div class="input-group input-group-outline my-3">
+                                    <label class="form-label">Email</label>
+                                    <input
+                                            class="form-control"
+                                            name="_username"
+                                            type="email"
+                                            value="{{ last_username }}"
+                                    />
                                 </div>
-                            {% endif %}
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Email</span>
-                                <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                        placeholder="Jane Doe"
-                                        name="_username"
-                                        type="email"
-                                        value="{{ last_username }}"
-                                />
-                            </label>
-                            <label class="block mt-4 text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Password</span>
-                                <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                        placeholder="***************"
-                                        name="_password"
-                                        type="password"
-                                />
-                            </label>
-
-                            <!-- You should use a button here, as the anchor is only used for the example  -->
-                            <button type="submit"
-                                    class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                Log in
-                            </button>
-
-                            <hr class="my-8"/>
-                            <p class="mt-4">
-                                <a
-                                        class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                        href="./forgot-password.html"
-                                >
-                                    Forgot your password?
-                                </a>
-                            </p>
-                            <p class="mt-1">
-                                <a
-                                        class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                        href="{{ path('app_register') }}"
-                                >
-                                    Create account
-                                </a>
-                            </p>
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                        </form>
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input
+                                            class="form-control"
+                                            name="_password"
+                                            type="password"
+                                    />
+                                </div>
+                                {#                            <div class="form-check form-switch d-flex align-items-center mb-3"> #}
+                                {#                                <label class="form-check-label mb-0 ms-3" for="rememberMe">Remember me</label> #}
+                                {#                            </div> #}
+                                <div class="text-center">
+                                    <button type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Log in
+                                    </button>
+                                </div>
+                                <p class="mt-4 text-sm text-center">
+                                    Don't have an account?
+                                    <a href="{{ path('app_register') }}"
+                                       class="text-primary text-gradient font-weight-bold">Sign up</a>
+                                </p>
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <footer class="footer position-absolute bottom-2 py-2 w-100">
+            <div class="container">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-12 col-md-6 my-auto">
+                        <div class="copyright text-center text-sm text-white text-lg-start">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            ,
+                            made with <i class="fa fa-heart" aria-hidden="true"></i> by
+                            <a href="https://www.creative-tim.com" class="font-weight-bold text-white" target="_blank">Creative
+                                Tim</a>
+                            for a better web.
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com" class="nav-link text-white" target="_blank">Creative
+                                    Tim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/presentation" class="nav-link text-white"
+                                   target="_blank">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/blog" class="nav-link text-white" target="_blank">Blog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-white"
+                                   target="_blank">License</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
+</main>
+<!--   Core JS Files   -->
+<script src="{{ asset('js/core/popper.min.js') }}"></script>
+<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+<script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+        var options = {
+            damping: '0.5'
+        }
+        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+</script>
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="{{ asset('js/material-dashboard.min.js') }}"></script>
+</body>
 
-{% endblock %}
+</html>
