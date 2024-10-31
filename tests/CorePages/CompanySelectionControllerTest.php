@@ -9,8 +9,6 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
 
     public function testCreatingNewCompany(): void
     {
-        // Sign in
-        $this->createAuthorizedClient();
         // go to page
         $this->client->request('GET', '/company/selection');
         self::assertResponseIsSuccessful();
