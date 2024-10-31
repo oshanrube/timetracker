@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\CorePages;
 
 use App\Entity\Auth\Login;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

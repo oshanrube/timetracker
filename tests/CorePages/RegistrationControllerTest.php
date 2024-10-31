@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\CorePages;
 
 use App\Repository\Auth\LoginRepository;
 use Doctrine\ORM\EntityManager;
