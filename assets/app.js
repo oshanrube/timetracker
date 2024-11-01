@@ -8,24 +8,24 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
-<!-- Nucleo Icons -->
+// <!-- Nucleo Icons -->
 import './css/nucleo-icons.css';
 import './css/nucleo-svg.css';
-<!-- CSS Files -->
+// <!-- CSS Files -->
 import './css/material-dashboard.css';
 //import './styles/global.scss';
 
 // import './styles/tailwind.output.css';
 
-const $ = require('jquery');
+//const $ = require('jquery');
 // this "modifies" the jquery module: adding behavior to it
 // the bootstrap module doesn't export/return anything
-require('bootstrap');
+//require('bootstrap');
 
 // or you can include specific pieces
 // require('bootstrap/js/dist/tooltip');
 // require('bootstrap/js/dist/popover');
 
-$(document).ready(function () {
-    $('[data-toggle="popover"]').popover();
-});
+// $(document).ready(function () {
+//     $('[data-toggle="popover"]').popover();
+// });
