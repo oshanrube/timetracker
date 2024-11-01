@@ -6,11 +6,8 @@ use App\Entity\Auth\CompanyHasSubdomain;
 use App\Entity\Auth\Login;
 use App\Entity\Auth\LoginHasCompany;
 use App\Entity\Company\Company;
-use App\Repository\Auth\CompanyHasSubdomainRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class CompanyCreation
