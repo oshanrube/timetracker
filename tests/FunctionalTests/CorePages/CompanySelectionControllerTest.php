@@ -23,7 +23,7 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
 
         self::assertPageTitleContains($this->translator->trans('Select Company'));
         // ensure the company is created
-        self::assertSelectorTextContains('body > main > div > div > div > div > div > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
+        self::assertSelectorTextContains('#company-list > a:nth-child(1)', 'Test company');
 
         $this->client->clickLink("Test company");
         self::assertResponseRedirects('/dashboard');
