@@ -13,7 +13,7 @@ class LoginHasCompany
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'loginHasCompanies')]
+    #[ORM\ManyToOne(inversedBy: 'loginHasCompanies', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Login $Login = null;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\FunctionalTests;
 
 use App\Factory\LoginFactory;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

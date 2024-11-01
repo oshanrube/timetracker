@@ -2,7 +2,7 @@
 
 namespace App\Tests\CorePages;
 
-use App\Tests\BaseLoggedInUser;
+use App\Tests\FunctionalTests\BaseLoggedInUser;
 
 class CompanySelectionControllerTest extends BaseLoggedInUser
 {
@@ -22,7 +22,7 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
 
         self::assertPageTitleContains($this->translator->trans('Select Company'));
         // ensure the company is created
-        self::assertSelectorTextContains('body > main > div > div > div > div > div > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
+        self::assertSelectorTextContains('#sign-in-form > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
 
         $this->client->clickLink("Test company");
         self::assertResponseRedirects('/dashboard');

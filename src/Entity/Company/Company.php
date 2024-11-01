@@ -11,24 +11,25 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
-#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: FALSE, hardDelete: TRUE)]
 class Company
 {
     use SoftDeleteableEntity;
     use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = NULL;
 
     #[ORM\Column(length: 255)]
     #[NotBlank]
-    private ?string $name = null;
+    private ?string $name = NULL;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column(type: Types::TEXT, nullable: TRUE)]
+    private ?string $description = NULL;
 
     #[NotBlank]
-    private ?string $subdomain = null;
+    private ?string $subdomain = NULL;
 
     public function getId(): ?int
     {
@@ -67,17 +68,15 @@ class Company
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSubdomain(): string
+    public function getSubdomain(): ?string
     {
+        if (!$this->subdomain) {
+            return $this->name;
+        }
+
         return $this->subdomain;
     }
 
-    /**
-     * @param string $subdomain
-     */
     public function setSubdomain(string $subdomain): void
     {
         $this->subdomain = $subdomain;

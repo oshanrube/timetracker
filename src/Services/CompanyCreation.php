@@ -7,6 +7,7 @@ use App\Entity\Auth\Login;
 use App\Entity\Auth\LoginHasCompany;
 use App\Entity\Company\Company;
 use App\Repository\Auth\CompanyHasSubdomainRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -15,18 +16,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class CompanyCreation
 {
     public function __construct(
-        private CompanyHasSubdomainRepository $company_has_subdomain_repository,
-        private ManagerRegistry               $doctrine
+        private readonly ManagerRegistry $doctrine
     ) {
 
     }
 
     public function checkSubdomainAvailability(string $subdomain): bool
     {
-        return NULL !== $this->company_has_subdomain_repository->findOneBy(['subdomain' => $subdomain]);
+        return NULL === $this->doctrine
+                ->getRepository(CompanyHasSubdomain::class, 'auth')
+                ->findOneBy(['subdomain' => $subdomain]);
     }
 
-    public function createCompany(Company $company, UserInterface $login): bool
+    public function createCompany(Company $company, ?UserInterface $login): bool
     {
         if (!$login instanceof Login) {
             return FALSE;
@@ -46,6 +48,8 @@ class CompanyCreation
             $company->setId($company_has_subdomain->getId());
             $this->doctrine->getManager('company')->persist($company);
             $this->doctrine->getManager('company')->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            return FALSE;
         } catch (\Exception $e) {
             //roll back
             return FALSE;

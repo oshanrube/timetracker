@@ -32,8 +32,6 @@ class CompanySelectionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // check
             if ($company_creation->checkSubdomainAvailability($company->getSubdomain())) {
-                $error = "";
-            } else {
                 $company_creation->createCompany($company, $this->getUser());
             }
         }
