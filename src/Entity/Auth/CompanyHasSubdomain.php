@@ -3,6 +3,7 @@
 namespace App\Entity\Auth;
 
 use App\Repository\Auth\CompanyHasSubdomainRepository;
+use App\Services\DomainNameSanitizer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,16 +12,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: CompanyHasSubdomainRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_SUBDOMAIN', fields: ['subdomain'])]
 #[UniqueEntity(fields: ['subdomain'], message: 'There is already an account with this subdomain')]
-
 class CompanyHasSubdomain
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = NULL;
 
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $subdomain = null;
+    #[ORM\Column(length: 255, unique: TRUE)]
+    private ?string $subdomain = NULL;
 
     /**
      * @var Collection<int, LoginHasCompany>
@@ -28,8 +28,8 @@ class CompanyHasSubdomain
     #[ORM\OneToMany(targetEntity: LoginHasCompany::class, mappedBy: 'Company')]
     private Collection $loginHasCompanies;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $name = null;
+    #[ORM\Column(length: 255, nullable: TRUE)]
+    private ?string $name = NULL;
 
     public function __construct()
     {
@@ -48,7 +48,7 @@ class CompanyHasSubdomain
 
     public function setSubdomain(string $subdomain): static
     {
-        $this->subdomain = $subdomain;
+        $this->subdomain = DomainNameSanitizer::sanitize($subdomain);
 
         return $this;
     }
@@ -76,7 +76,7 @@ class CompanyHasSubdomain
         if ($this->loginHasCompanies->removeElement($loginHasCompany)) {
             // set the owning side to null (unless already changed)
             if ($loginHasCompany->getCompany() === $this) {
-                $loginHasCompany->setCompany(null);
+                $loginHasCompany->setCompany(NULL);
             }
         }
 

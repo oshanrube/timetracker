@@ -26,7 +26,7 @@ class CompanySelectionController extends AbstractController
     ): Response {
 
         $company = new Company();
-        $form    = $this->createForm(CreateCompanyType::class, $company);
+        $form    = $this->createForm(CreateCompanyType::class, $company, ['action' => $this->generateUrl('app_company_selection')]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

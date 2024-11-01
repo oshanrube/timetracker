@@ -3,6 +3,7 @@
 namespace App\Entity\Company;
 
 use App\Repository\Company\CompanyRepository;
+use App\Services\DomainNameSanitizer;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -70,16 +71,16 @@ class Company
 
     public function getSubdomain(): ?string
     {
-        if (!$this->subdomain) {
-            return $this->name;
-        }
-
         return $this->subdomain;
     }
 
-    public function setSubdomain(string $subdomain): void
+    public function setSubdomain(?string $subdomain): void
     {
-        $this->subdomain = $subdomain;
+        if ($subdomain === NULL) {
+            $subdomain = DomainNameSanitizer::sanitize($this->name);
+        }
+
+        $this->subdomain = DomainNameSanitizer::sanitize($subdomain);
     }
 
 }

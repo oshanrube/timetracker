@@ -16,13 +16,14 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
 
         // submit the form
         $this->client->submitForm($this->translator->trans('Create new company'), [
-            'create_company[name]'      => 'Test company',
-            'create_company[subdomain]' => 'test-company',
+            'create_company[name]'        => 'Test company',
+            'create_company[subdomain]'   => 'test-company',
+            'create_company[description]' => "Test description",
         ]);
 
         self::assertPageTitleContains($this->translator->trans('Select Company'));
         // ensure the company is created
-        self::assertSelectorTextContains('#sign-in-form > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
+        self::assertSelectorTextContains('body > main > div > div > div > div > div > div:nth-child(2) > div > a:nth-child(1)', 'Test company');
 
         $this->client->clickLink("Test company");
         self::assertResponseRedirects('/dashboard');
