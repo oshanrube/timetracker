@@ -5,7 +5,6 @@
         <div class="row">
             <div class="col-lg-4 col-md-8 col-12 mx-auto">
                 <div class="card z-index-0 fadeIn3 fadeInBottom">
-                    <turbo-frame id="sign-in-form">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                             <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">{{ 'Select Company'|trans }}</h4>
@@ -14,13 +13,14 @@
                     <div class="card-body">
                         <div class="list-group" id="company-list">
                             {% for LoginHasCompany in LoginHasCompanies %}
-                                <a data-turbo-frame="_top" class="list-group-item" href="{{ path('app_company_select', {companyId: LoginHasCompany.company.id}) }}">
+                                <a data-turbo-frame="_top" class="list-group-item"
+                                   href="{{ path('app_company_select', {companyId: LoginHasCompany.company.id}) }}">
                                     {{ LoginHasCompany.Company }}
                                 </a>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="select-company-form">
                         {% for flash_error in app.flashes('verify_email_error') %}
                             <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
                         {% endfor %}
@@ -57,7 +57,6 @@
                         </div>
                         {{ form_end(companyCreationForm) }}
                     </div>
-                    </turbo-frame>
                 </div>
             </div>
         </div>
