@@ -28,6 +28,7 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
         $this->client->clickLink("Test company");
         self::assertResponseRedirects('/dashboard');
         $this->client->followRedirect();
+        self::assertPageTitleContains($this->translator->trans('Welcome to Timetracker!'));
 
         self::assertSelectorNotExists('.alert-danger');
         self::assertResponseIsSuccessful();

@@ -29,3 +29,5 @@ import './css/material-dashboard.css';
 // $(document).ready(function () {
 //     $('[data-toggle="popover"]').popover();
 // });
+
+import './js/material-dashboard.js';
