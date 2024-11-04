@@ -23,7 +23,7 @@ class CompanyCreationTest extends KernelTestCase
         self::bootKernel();
         $doctrine = self::getContainer()->get(ManagerRegistry::class);
         assert($doctrine instanceof ManagerRegistry);
-        $this->companyCreationService = new CompanyCreation($doctrine);
+        $this->companyCreationService = new CompanyCreation($doctrine, self::getContainer());
     }
 
     public function testCheckSubdomainAvailability(): void
@@ -50,7 +50,7 @@ class CompanyCreationTest extends KernelTestCase
         // used subdomain
         $company = new Company();
         $company->setName('Company 1')->setSubdomain('used-subdomain');
-        $user     = new Login();
+        $user = new Login();
         $user
             ->setEmail("user1@example.com")
             ->setPassword('password')
@@ -65,7 +65,7 @@ class CompanyCreationTest extends KernelTestCase
         // empty subdomain
         $company = new Company();
         $company->setName('Company 2');
-        $user     = new Login();
+        $user = new Login();
         $user
             ->setEmail("user2@example.com")
             ->setPassword('password')
@@ -73,5 +73,13 @@ class CompanyCreationTest extends KernelTestCase
 
         $result = $this->companyCreationService->createCompany($company, $user);
         $this->assertTrue($result);
+
+        $doctrine = self::getContainer()->get(ManagerRegistry::class);
+        assert($doctrine instanceof ManagerRegistry);
+        $db_company = $doctrine
+            ->getManager('company')
+            ->getRepository(Company::class)
+            ->findOneBy(['name' => 'Company 2']);
+        $this->assertNotNull($db_company);
     }
 }
