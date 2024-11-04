@@ -2,16 +2,11 @@
 
 namespace App\Tests\IntegrationTests\Services;
 
-use App\Entity\Auth\CompanyHasSubdomain;
 use App\Entity\Auth\Login;
 use App\Entity\Company\Company;
-use App\Factory\CompanyFactory;
 use App\Factory\CompanyHasSubdomainFactory;
-use App\Factory\LoginFactory;
-use App\Repository\Auth\CompanyHasSubdomainRepository;
 use App\Services\CompanyCreation;
 use Doctrine\Persistence\ManagerRegistry;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class CompanyCreationTest extends KernelTestCase
