@@ -2,10 +2,14 @@
 
 namespace App\Services\DatabaseManager;
 
+use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\ContainerAwareEventManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -14,13 +18,14 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class DatabaseCreator
 {
-    /**
-     * @param ParameterBagInterface $params
-     * @param ContainerInterface    $container
-     */
     public function __construct(
-        private readonly ParameterBagInterface $params,
-        private readonly ContainerInterface    $container,
+        private readonly string                      $company_database_url_template,
+        private readonly Configuration               $company_connection_configuration,
+        private readonly ContainerAwareEventManager  $company_connection_event_manager,
+        private readonly ConnectionFactory           $connection_factory,
+        private readonly \Doctrine\ORM\Configuration $company_configuration,
+        private                                      $company_entity_manager,
+        private readonly LoggerInterface             $logger,
     ) {
     }
 
@@ -31,30 +36,15 @@ class DatabaseCreator
      */
     public function createDatabaseConnection(int $company_id): Connection
     {
-        $params  = [
-            'url'                 => sprintf($this->params->get('app.company_database_url_template'), $company_id),
+        $params = [
+            'url'                 => sprintf($this->company_database_url_template, $company_id),
             'use_savepoints'      => TRUE, 'driver' => 'pdo_mysql',
             'idle_connection_ttl' => 600, 'host' => 'localhost',
             'port'                => NULL, 'user' => 'root', 'password' => NULL,
             'driverOptions'       => [], 'defaultTableOptions' => [],
         ];
 
-        $config             = $this->container->get('doctrine.dbal.company_connection.configuration');
-        $event_manager      = $this->container->get('doctrine.dbal.company_connection.event_manager');
-        $connection_factory = $this->container->get('doctrine.dbal.connection_factory');
-        $connection         = $connection_factory->createConnection($params, $config, $event_manager);
-        $this->container->set('doctrine.dbal.company_connection_'.$company_id, $connection);
-
-        return $connection;
-    }
-
-    public function loadDatabaseConnection(int $company_id): Connection
-    {
-        if(!$this->container->has('doctrine.dbal.company_connection_'.$company_id))
-        {
-            return $this->createDatabaseConnection($company_id);
-        }
-        return $this->container->has('doctrine.dbal.company_connection_'.$company_id);
+        return $this->connection_factory->createConnection($params, $this->company_connection_configuration, $this->company_connection_event_manager);
     }
 
     /**
@@ -102,10 +92,9 @@ class DatabaseCreator
      */
     public function createEntityManager(Connection $connection): void
     {
-        $company_configuration = $this->container->get('doctrine.orm.company_configuration');
-        $event_manager         = $this->container->get('doctrine.dbal.company_connection.event_manager');
-        $entity_manager        = new EntityManager($connection, $company_configuration, $event_manager);
-        $this->container->set('doctrine.orm.company_entity_manager', $entity_manager);
+        $entity_manager = new EntityManager($connection, $this->company_configuration, $this->company_connection_event_manager);
+        //$this->container->set('doctrine.orm.company_entity_manager', $entity_manager);
+        $this->company_entity_manager = $entity_manager;
     }
 
     /**
@@ -113,30 +102,41 @@ class DatabaseCreator
      */
     public function createDatabaseSchema(): void
     {
-        // get entity manager
-        $entity_manager = $this->container->get('doctrine.orm.company_entity_manager');
         // create schema tool
-        $st = new SchemaTool($entity_manager);
+        $st = new SchemaTool($this->company_entity_manager);
         // update schema
-        $meta_data      = $entity_manager->getMetadataFactory()->getAllMetadata();
+        $meta_data = $this->company_entity_manager->getMetadataFactory()->getAllMetadata();
         $st->updateSchema($meta_data);
     }
 
     /**
      * @param int $company_id
      *
-     * @return void
+     * @return EntityManager
      * @throws \Doctrine\DBAL\Exception
      */
-    public function loadDatabase(int $company_id): void
+    public function loadDatabase(int $company_id): EntityManager
     {
-        // create connection
-        $connection = $this->createDatabaseConnection($company_id);
-        // create Database
-        $this->createDatabaseIfNotExists($connection);
-        // create entityManager
-        $this->createEntityManager($connection);
-        // create database tables
-        $this->createDatabaseSchema();
+        try {
+            // create connection
+            $connection = $this->createDatabaseConnection($company_id);
+            // create Database
+            $this->createDatabaseIfNotExists($connection);
+            // create entityManager
+            $this->createEntityManager($connection);
+            // create database tables
+            $this->createDatabaseSchema();
+
+            return $this->company_entity_manager;
+        } catch (\Exception $exception) {
+            $this->logger->error("[DatabaseCreator|loadDatabase]: {$exception->getMessage()}");
+        }
+    }
+
+    private ContainerInterface $container;
+
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 }

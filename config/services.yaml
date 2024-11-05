@@ -35,3 +35,13 @@ services:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    app.database_creator:
+        class: App\Services\DatabaseManager\DatabaseCreator
+        arguments:
+            - Symfony\Component\DependencyInjection\ParameterBag\ParameterInterface
+            - '@doctrine.dbal.company_connection.configuration'
+            - '@doctrine.dbal.company_connection.event_manager'
+            - '@doctrine.dbal.connection_factory'
+            - '@doctrine.orm.company_configuration'
+            - '@doctrine.orm.company_entity_manager'
+            - '@logger'

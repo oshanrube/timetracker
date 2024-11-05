@@ -6,6 +6,7 @@ use App\Entity\Company\Company;
 use App\Form\CreateCompanyType;
 use App\Repository\Auth\LoginHasCompanyRepository;
 use App\Services\CompanyCreation;
+use App\Services\DatabaseManager\DatabaseCreator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

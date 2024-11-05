@@ -2,15 +2,20 @@
 
 namespace App\Tests\IntegrationTests\Services;
 
+use App\Entity\Auth\CompanyHasSubdomain;
 use App\Entity\Auth\Login;
 use App\Entity\Company\Company;
 use App\Factory\CompanyHasSubdomainFactory;
 use App\Services\CompanyCreation;
+use App\Services\DatabaseManager\DatabaseCreator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class CompanyCreationTest extends KernelTestCase
 {
+    use ResetDatabase, Factories;
     private CompanyCreation $companyCreationService;
 
     public function setUp(): void
@@ -42,9 +47,17 @@ class CompanyCreationTest extends KernelTestCase
 
     public function testCreateCompanyWithUsedSubdomain(): void
     {
+        //
+        $company_has_subdomain = new CompanyHasSubdomain();
+        $company_has_subdomain->setSubdomain('used-subdomain');
+        $company_has_subdomain->setName('c old company');
+        $doctrine = self::getContainer()->get(ManagerRegistry::class);
+        assert($doctrine instanceof ManagerRegistry);
+        $doctrine->getManager('auth')->persist($company_has_subdomain);
         // used subdomain
         $company = new Company();
-        $company->setName('Company 1')->setSubdomain('used-subdomain');
+        $company->setName('Company 1')
+                ->setSubdomain('used-subdomain');
         $user = new Login();
         $user
             ->setEmail("user1@example.com")
@@ -68,6 +81,7 @@ class CompanyCreationTest extends KernelTestCase
 
         $result = $this->companyCreationService->createCompany($company, $user);
         $this->assertTrue($result);
+        $dc = self::getContainer()->get( \App\Services\DatabaseManager\DatabaseCreator::class);
 
         $doctrine = self::getContainer()->get(ManagerRegistry::class);
         assert($doctrine instanceof ManagerRegistry);

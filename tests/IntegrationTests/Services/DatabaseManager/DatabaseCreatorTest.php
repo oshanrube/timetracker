@@ -10,12 +10,23 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class DatabaseCreatorTest extends KernelTestCase
 {
+    private static function createDatabaseCreator()
+    {
+        return new DatabaseCreator(
+            self::getContainer()->getParameter('app.company_database_url_template'),
+            self::getContainer()->get('doctrine.dbal.company_connection.configuration'),
+            self::getContainer()->get('doctrine.dbal.company_connection.event_manager'),
+            self::getContainer()->get('doctrine.dbal.connection_factory'),
+            self::getContainer()->get('doctrine.orm.company_configuration'),
+            self::getContainer()->get('doctrine.orm.company_entity_manager'),
+            self::getContainer()->get('logger'),
+        );
+    }
+
     public function testCreateDatabaseConnection()
     {
         $this->expectNotToPerformAssertions();
-        $params_bag = self::getContainer()->get(ParameterBagInterface::class);
-        assert($params_bag instanceof ParameterBagInterface);
-        $db_creator = new DatabaseCreator($params_bag, self::getContainer());
+        $db_creator = self::createDatabaseCreator();
 
         $company_id = 233;
         // create connection
@@ -25,13 +36,11 @@ class DatabaseCreatorTest extends KernelTestCase
     public function testDeleteDatabaseIfExistsWithoutDb()
     {
         $this->expectNotToPerformAssertions();
-        $params_bag = self::getContainer()->get(ParameterBagInterface::class);
-        assert($params_bag instanceof ParameterBagInterface);
-        $db_creator = new DatabaseCreator($params_bag, self::getContainer());
+        $db_creator = self::createDatabaseCreator();
 
         $company_id = 233;
         // create connection
-        $connection = $db_creator->loadDatabaseConnection($company_id);
+        $connection = $db_creator->createDatabaseConnection($company_id);
         // delete Database
         $db_creator->deleteDatabaseIfExists($connection);
     }
@@ -39,13 +48,11 @@ class DatabaseCreatorTest extends KernelTestCase
     public function testDeleteDatabaseIfExistsWithDb()
     {
         $this->expectNotToPerformAssertions();
-        $params_bag = self::getContainer()->get(ParameterBagInterface::class);
-        assert($params_bag instanceof ParameterBagInterface);
-        $db_creator = new DatabaseCreator($params_bag, self::getContainer());
+        $db_creator = self::createDatabaseCreator();
 
         $company_id = 233;
         // create connection
-        $connection = $db_creator->loadDatabaseConnection($company_id);
+        $connection = $db_creator->createDatabaseConnection($company_id);
         // delete Database if old one exists
         $db_creator->deleteDatabaseIfExists($connection);
         // create Database
@@ -57,13 +64,11 @@ class DatabaseCreatorTest extends KernelTestCase
     public function testCreateDatabaseIfNotExistsWithDb()
     {
         $this->expectNotToPerformAssertions();
-        $params_bag = self::getContainer()->get(ParameterBagInterface::class);
-        assert($params_bag instanceof ParameterBagInterface);
-        $db_creator = new DatabaseCreator($params_bag, self::getContainer());
+        $db_creator = self::createDatabaseCreator();
 
         $company_id = 233;
         // create connection
-        $connection = $db_creator->loadDatabaseConnection($company_id);
+        $connection = $db_creator->createDatabaseConnection($company_id);
         // create Database
         $db_creator->createDatabaseIfNotExists($connection);
     }
@@ -73,23 +78,24 @@ class DatabaseCreatorTest extends KernelTestCase
      */
     public function testLoadDatabaseFromCompanyId()
     {
-        $params_bag = self::getContainer()->get(ParameterBagInterface::class);
-        assert($params_bag instanceof ParameterBagInterface);
-        $db_creator = new DatabaseCreator($params_bag, self::getContainer());
+        $db_creator = self::createDatabaseCreator();
 
         $company_id = 233;
         // create database tables
-        $db_creator->loadDatabase($company_id);
+//        $db_creator->setContainer(self::getContainer()->get('service_container'));
+        $company_entity_manager = $db_creator->loadDatabase($company_id);
+//        self::getContainer()->set('doctrine.orm.company_entity_manager', $company_entity_manager);
         // try creating a new Entity
         $company = new Company();
         $company->setId($company_id);
         $company->setName("New Company name");
 
-        $doctrine = self::getContainer()->get('doctrine');
-        $doctrine->getManager('company')->persist($company);
-        $doctrine->getManager('company')->flush();
+        $company_entity_manager->persist($company);
+        $company_entity_manager->flush();
 
-        $company = $doctrine->getManager('company')->getRepository(Company::class)->find($company_id);
+        $company = $company_entity_manager
+            ->getRepository(Company::class)
+            ->find($company_id);
         $this->assertNotNull($company);
     }
 }
