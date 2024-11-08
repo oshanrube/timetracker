@@ -6,7 +6,9 @@ use App\Entity\Auth\CompanyHasSubdomain;
 use App\Entity\Auth\Login;
 use App\Entity\Company\Company;
 use App\Factory\CompanyHasSubdomainFactory;
+use App\Services\AppDoctrineRegistry;
 use App\Services\CompanyCreation;
+use App\Services\DatabaseManager\DatabaseCreator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -20,9 +22,11 @@ class CompanyCreationTest extends KernelTestCase
     public function setUp(): void
     {
         self::bootKernel();
-        $doctrine = self::getContainer()->get(ManagerRegistry::class);
+        $doctrine = self::getContainer()->get(AppDoctrineRegistry::class);
         assert($doctrine instanceof ManagerRegistry);
-        $this->companyCreationService = new CompanyCreation($doctrine, self::getContainer());
+        $database_creator = self::getContainer()->get(DatabaseCreator::class);
+        assert($database_creator instanceof DatabaseCreator);
+        $this->companyCreationService = new CompanyCreation($doctrine, $database_creator);
     }
 
     public function testCheckSubdomainAvailability(): void
@@ -80,9 +84,8 @@ class CompanyCreationTest extends KernelTestCase
 
         $result = $this->companyCreationService->createCompany($company, $user);
         $this->assertTrue($result);
-        $dc = self::getContainer()->get( \App\Services\DatabaseManager\DatabaseCreator::class);
 
-        $doctrine = self::getContainer()->get(ManagerRegistry::class);
+        $doctrine = self::getContainer()->get(AppDoctrineRegistry::class);
         assert($doctrine instanceof ManagerRegistry);
         $db_company = $doctrine
             ->getManager('company')

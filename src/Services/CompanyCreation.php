@@ -6,14 +6,17 @@ use App\Entity\Auth\CompanyHasSubdomain;
 use App\Entity\Auth\Login;
 use App\Entity\Auth\LoginHasCompany;
 use App\Entity\Company\Company;
+use App\Services\DatabaseManager\DatabaseCreator;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class CompanyCreation
 {
     public function __construct(
-        private readonly ManagerRegistry $doctrine
+        private readonly AppDoctrineRegistry $doctrine,
+        private readonly DatabaseCreator     $database_creator,
     ) {
 
     }
@@ -48,8 +51,10 @@ class CompanyCreation
         } catch (UniqueConstraintViolationException $e) {
             return FALSE;
         }
-
         $company->setId($company_has_subdomain->getId());
+        // load new Database
+        $this->database_creator->loadDatabase($company->getId());
+        // save to db
         $this->doctrine->getManager('company')->persist($company);
         $this->doctrine->getManager('company')->flush();
 
