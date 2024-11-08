@@ -2,6 +2,7 @@
 
 namespace App\Tests\CorePages;
 
+use App\Services\DatabaseManager\DatabaseCreator;
 use App\Tests\FunctionalTests\BaseLoggedInUser;
 
 class CompanySelectionControllerTest extends BaseLoggedInUser
@@ -32,5 +33,12 @@ class CompanySelectionControllerTest extends BaseLoggedInUser
 
         self::assertSelectorNotExists('.alert-danger');
         self::assertResponseIsSuccessful();
+
+        //TODO fix this cleanup
+        $database_creator = self::getContainer()->get(DatabaseCreator::class);
+        assert($database_creator instanceof DatabaseCreator);
+        $database_creator->loadDatabase(1);
+        $connection = self::getContainer()->get('doctrine.orm.user_company_connection');
+        $database_creator->deleteDatabaseIfExists($connection);
     }
 }

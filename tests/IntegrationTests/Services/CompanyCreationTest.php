@@ -11,8 +11,10 @@ use App\Services\CompanyCreation;
 use App\Services\DatabaseManager\DatabaseCreator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Foundry\Persistence\ResetDatabase\ResetDatabaseManager;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
+use PHPUnit\Framework\Attributes\Before;
 
 class CompanyCreationTest extends KernelTestCase
 {
@@ -92,5 +94,12 @@ class CompanyCreationTest extends KernelTestCase
             ->getRepository(Company::class)
             ->findOneBy(['name' => 'Company 2']);
         $this->assertNotNull($db_company);
+
+        //TODO fix this cleanup
+        $database_creator = self::getContainer()->get(DatabaseCreator::class);
+        assert($database_creator instanceof DatabaseCreator);
+        $database_creator->loadDatabase($db_company->getId());
+        $connection = self::getContainer()->get('doctrine.orm.user_company_connection');
+        $database_creator->deleteDatabaseIfExists($connection);
     }
 }

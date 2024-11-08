@@ -45,7 +45,9 @@ class DatabaseCreator
             'driverOptions'       => [], 'defaultTableOptions' => [],
         ];
 
-        return $this->connection_factory->createConnection($params, $this->company_connection_configuration, $this->company_connection_event_manager);
+        $connection = $this->connection_factory->createConnection($params, $this->company_connection_configuration, $this->company_connection_event_manager);
+        $this->container->set('doctrine.orm.user_company_connection', $connection);
+        return $connection;
     }
 
     /**
