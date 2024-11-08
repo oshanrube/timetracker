@@ -7,7 +7,6 @@ use App\Entity\Auth\Login;
 use App\Entity\Company\Company;
 use App\Factory\CompanyHasSubdomainFactory;
 use App\Services\CompanyCreation;
-use App\Services\DatabaseManager\DatabaseCreator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;

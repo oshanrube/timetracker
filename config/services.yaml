@@ -38,10 +38,25 @@ services:
     app.database_creator:
         class: App\Services\DatabaseManager\DatabaseCreator
         arguments:
-            - Symfony\Component\DependencyInjection\ParameterBag\ParameterInterface
-            - '@doctrine.dbal.company_connection.configuration'
-            - '@doctrine.dbal.company_connection.event_manager'
-            - '@doctrine.dbal.connection_factory'
-            - '@doctrine.orm.company_configuration'
-            - '@doctrine.orm.company_entity_manager'
-            - '@logger'
+            $company_database_url_template: '%app.company_database_url_template%'
+            $company_connection_configuration: '@doctrine.dbal.company_connection.configuration'
+            $company_connection_event_manager: '@doctrine.dbal.company_connection.event_manager'
+            $connection_factory: '@doctrine.dbal.connection_factory'
+            $company_configuration: '@doctrine.orm.company_configuration'
+            $company_entity_manager: '@doctrine.orm.company_entity_manager'
+            $logger: '@logger'
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    App\Services\DatabaseManager\DatabaseCreator: "@app.database_creator"
+
+    App\Services\AppDoctrineRegistry:
+        public: true
+        tags:
+            - { name: kernel.reset, method: reset }
+        arguments:
+            - '@service_container'
+            - '%doctrine.connections%'
+            - '%doctrine.entity_managers%'
+            - default
+            - auth

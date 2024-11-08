@@ -2,16 +2,17 @@
 
 namespace App\Services\DatabaseManager;
 
+use App\Exceptions\DatabaseCreatorException;
+use App\Services\CompanyEntityManager;
 use Doctrine\Bundle\DoctrineBundle\ConnectionFactory;
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\ContainerAwareEventManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  *
@@ -19,13 +20,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class DatabaseCreator
 {
     public function __construct(
-        private readonly string                      $company_database_url_template,
-        private readonly Configuration               $company_connection_configuration,
-        private readonly ContainerAwareEventManager  $company_connection_event_manager,
-        private readonly ConnectionFactory           $connection_factory,
-        private readonly \Doctrine\ORM\Configuration $company_configuration,
-        private                                      $company_entity_manager,
-        private readonly LoggerInterface             $logger,
+        private string                      $company_database_url_template,
+        private Configuration               $company_connection_configuration,
+        private ContainerAwareEventManager  $company_connection_event_manager,
+        private ConnectionFactory           $connection_factory,
+        private \Doctrine\ORM\Configuration $company_configuration,
+        private                             $company_entity_manager,
+        private LoggerInterface             $logger,
     ) {
     }
 
@@ -93,8 +94,13 @@ class DatabaseCreator
     public function createEntityManager(Connection $connection): void
     {
         $entity_manager = new EntityManager($connection, $this->company_configuration, $this->company_connection_event_manager);
-        //$this->container->set('doctrine.orm.company_entity_manager', $entity_manager);
+        $this->container->set('doctrine.orm.user_company_entity_manager', $entity_manager);
         $this->company_entity_manager = $entity_manager;
+    }
+
+    public function getEntityManager(): EntityManager
+    {
+        return $this->company_entity_manager;
     }
 
     /**
@@ -130,12 +136,14 @@ class DatabaseCreator
             return $this->company_entity_manager;
         } catch (\Exception $exception) {
             $this->logger->error("[DatabaseCreator|loadDatabase]: {$exception->getMessage()}");
+            throw new DatabaseCreatorException('Error creating database for the company');
         }
     }
 
     private ContainerInterface $container;
 
-    public function setContainer(ContainerInterface $container)
+    //#[Required]
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }

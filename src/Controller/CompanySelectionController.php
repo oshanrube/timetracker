@@ -19,8 +19,8 @@ class CompanySelectionController extends AbstractController
         Request                   $request,
         CompanyCreation           $company_creation,
         LoginHasCompanyRepository $login_has_company_repository,
+        DatabaseCreator $dc
     ): Response {
-
         $company = new Company();
         $form    = $this->createForm(CreateCompanyType::class, $company, ['action' => $this->generateUrl('app_company_selection')]);
         $form->handleRequest($request);
